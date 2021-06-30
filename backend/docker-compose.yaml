@@ -1,0 +1,19 @@
+version: '3.9'
+services:
+  nginx:
+    image: nginx:0.3
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - type: volume
+        source: files-share 
+        target: /etc/letsencrypt/live/
+  frontend:
+    image: frontend:0.01
+    ports:
+      - 3000:3000
+    depends_on:
+      - nginx
+volumes:
+  files-share:

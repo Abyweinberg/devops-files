@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  nginx:
+    image: nginx:0.5
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - type: volume 
+        source: sharedata 
+        target: /etc/letsencrypt/archive/
+    networks:
+      private_network:
+        ipv4_address: 172.19.0.19
+  frontend:
+    image: frontend:0.2
+    ports:
+      - 3000:3000
+    depends_on:
+      - nginx
+    networks:
+      private_network:
+        ipv4_address: 172.19.0.20
+  backend:
+    image: backend:0.2
+    ports:
+      - 3007:3007
+    depends_on:
+      - frontend 
+    networks:
+      private_network:
+        ipv4_address: 172.19.0.21
+volumes:
+  sharedata:
+networks:
+  private_network:
+    driver: bridge 
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.19.0.0/24
+          gateway: 172.19.0.1
